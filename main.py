@@ -55,32 +55,64 @@ def solve(test_case, case_id):
     customers = test_case['customers']
     customers = sorted(customers, cmp=cmp_customers)
     customers = [sorted(choices, cmp=cmp_choices) for choices in customers]
+
+    print('customers', customers)
+
     colors = test_case['colors']
     colors_count = test_case['colors_count']
     solution = set()
+    stack = []
+    backtrack_i = None
 
     # starting with customers with least options
-    for choices in customers:
+    j = 0
+    while j < len(customers):
+        choices = customers[j]
+
         satisfied = False
 
-        for i, choice in enumerate(choices):
+        i = backtrack_i or 0
+        while i < len(choices):
+            choice = choices[i]
+
             can_pop = check_and_pop(choice, choices, solution)
 
+            print 'i', i
             if can_pop is False:
-
                 if i == len(choices) - 1:
                     # no more options :(
+                    i += 1
                     satisfied = False
                 else:
+                    i += 1
                     continue
             else:
                 satisfied = True
                 solution.add(choice)
+                stack.append(i)
+                print "solution so far", solution
+                print "stack", stack
+                break
 
         if not satisfied:
-            # we cannot satisfy everyone
-            solution = None
-            break
+            if [(len(x) - 1) for x in customers] == stack:
+                # we cannot satisfy everyone
+                solution = None
+                break
+            else:
+                print "more to explore.."
+
+                for customer_i, choice_i in enumerate(stack):
+                    if choice_i < len(customers[customer_i]) - 1:
+                        print 'its possible to redo', customer_i, choice_i
+                        j = customer_i
+                        backtrack_i = choice_i + 1
+                        stack = stack[:customer_i]
+
+                    if backtrack_i is not None:
+                        solution.remove(customers[customer_i][choice_i])
+
+        j += 1
 
     return print_solution(solution, colors_count, case_id)
 

@@ -23,6 +23,23 @@ class TestFixtures(unittest.TestCase):
 
             self.assertEqual(find_solution(fs.readlines()), output)
 
+    def test_simple4_example(self):
+        with open(os.path.join("fixtures", "simple4.txt")) as fs:
+            output = ["Case #1: 0 0 0 0 1"]
+
+            self.assertEqual(find_solution(fs.readlines()), output)
+
+    def test_backtrack(self):
+        with open(os.path.join("fixtures", "back_track.txt")) as fs:
+            output = ["Case #1: 1 0 1"]
+
+            self.assertEqual(find_solution(fs.readlines()), output)
+
+    def test_large_dataset(self):
+        with open(os.path.join("fixtures", "large_dataset.txt")) as fs:
+            # todo: write assert for this
+            find_solution(fs.readlines())
+
 
 if __name__ == '__main__':
     unittest.main()
