@@ -38,6 +38,19 @@ def check_and_pop(choice, choices, solution):
         return False
 
 
+def print_solution(solution, colors_count, case_id):
+    result = "Case #{}: ".format(case_id)
+    if not solution:
+        result += "IMPOSSIBLE"
+    else:
+        arr = [("1" if (i, 1) in solution else "0") for i in range(1, colors_count + 1)]
+        result += ' '.join(arr)
+
+    print(result)
+
+    return result
+
+
 def solve(test_case, case_id):
     customers = test_case['customers']
     customers = sorted(customers, cmp=cmp_customers)
@@ -69,17 +82,7 @@ def solve(test_case, case_id):
             solution = None
             break
 
-    print("solutoin", solution)
-    result = "Case #{}: ".format(case_id)
-    if not solution:
-        result += "IMPOSSIBLE"
-    else:
-        arr = [("1" if (i, 1) in solution else "0") for i in range(1, colors_count+1)]
-        result += ' '.join(arr)
-
-    print(result)
-
-    return result
+    return print_solution(solution, colors_count, case_id)
 
 
 def parse_input(lines):
@@ -107,6 +110,7 @@ def parse_input(lines):
             choices_count = int(splitted.pop(0))
 
             for i in range(choices_count):
+                # window size of two
                 color, finish = splitted[(i * 2):(i * 2) + 2]
                 customer.append((int(color), int(finish)))
 
@@ -122,6 +126,6 @@ def parse_input(lines):
     return tests
 
 
-def solution(lines):
+def find_solution(lines):
     parsed_input = parse_input(lines)
-    return [solve(parsed_input[i], i+1) for i in range(len(parsed_input))]
+    return [solve(parsed_input[i], i + 1) for i in range(len(parsed_input))]
