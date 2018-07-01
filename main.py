@@ -31,11 +31,15 @@ def cmp_choices(a, b):
 def check_and_pop(choice, choices, solution):
     color, finish = choice
 
+    #print "(checking pop)", choice, 'in', solution
+
     if choice in solution:
         return False
 
     if (color, finish ^ 1) in solution:
         return False
+
+    return True
 
 
 def print_solution(solution, colors_count, case_id):
@@ -46,7 +50,7 @@ def print_solution(solution, colors_count, case_id):
         arr = [("1" if (i, 1) in solution else "0") for i in range(1, colors_count + 1)]
         result += ' '.join(arr)
 
-    print(result)
+    #print(result)
 
     return result
 
@@ -56,7 +60,7 @@ def solve(test_case, case_id):
     customers = sorted(customers, cmp=cmp_customers)
     customers = [sorted(choices, cmp=cmp_choices) for choices in customers]
 
-    print('customers', customers)
+    #print('customers', customers)
 
     colors = test_case['colors']
     colors_count = test_case['colors_count']
@@ -67,18 +71,21 @@ def solve(test_case, case_id):
     # starting with customers with least options
     j = 0
     while j < len(customers):
+        #print 'solution >>', solution, 'customer', j
         choices = customers[j]
 
         satisfied = False
 
         i = backtrack_i or 0
+        backtrack_i = None
         while i < len(choices):
             choice = choices[i]
 
             can_pop = check_and_pop(choice, choices, solution)
 
-            print 'i', i
-            if can_pop is False:
+            #print 'i', i
+            #print 'can pop', can_pop
+            if not can_pop:
                 if i == len(choices) - 1:
                     # no more options :(
                     i += 1
@@ -90,30 +97,33 @@ def solve(test_case, case_id):
                 satisfied = True
                 solution.add(choice)
                 stack.append(i)
-                print "solution so far", solution
-                print "stack", stack
+                #print "solution so far", solution
+                #print "stack", stack
                 break
 
         if not satisfied:
+            #print 'not satis', [(len(x) - 1) for x in customers], stack
             if [(len(x) - 1) for x in customers] == stack:
                 # we cannot satisfy everyone
                 solution = None
                 break
             else:
-                print "more to explore.."
+                #print "more to explore.."
 
                 for customer_i, choice_i in enumerate(stack):
-                    if choice_i < len(customers[customer_i]) - 1:
-                        print 'its possible to redo', customer_i, choice_i
-                        j = customer_i
+                    if choice_i < len(customers[customer_i]) - 1 and backtrack_i is None:
+                        #print 'its possible to redo', customer_i, choice_i
+                        j = customer_i - 1
                         backtrack_i = choice_i + 1
                         stack = stack[:customer_i]
+                        #print 'new stack', stack
 
                     if backtrack_i is not None:
                         solution.remove(customers[customer_i][choice_i])
 
         j += 1
 
+    #print 'final', solution
     return print_solution(solution, colors_count, case_id)
 
 
