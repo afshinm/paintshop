@@ -29,9 +29,21 @@ class TestFixtures(unittest.TestCase):
 
             self.assertEqual(find_solution(fs.readlines()), output)
 
+    def test_simple5_example(self):
+        with open(os.path.join("fixtures", "simple5.txt")) as fs:
+            output = ["Case #1: IMPOSSIBLE"]
+
+            self.assertEqual(find_solution(fs.readlines()), output)
+
+    def test_simple6_example(self):
+        with open(os.path.join("fixtures", "simple6.txt")) as fs:
+            output = ["Case #1: 1 0 1 0 0"]
+
+            self.assertEqual(find_solution(fs.readlines()), output)
+
     def test_backtrack(self):
         with open(os.path.join("fixtures", "back_track.txt")) as fs:
-            output = ["Case #1: 1 0 1"]
+            output = ["Case #1: 0 0 1"]
 
             self.assertEqual(find_solution(fs.readlines()), output)
 
